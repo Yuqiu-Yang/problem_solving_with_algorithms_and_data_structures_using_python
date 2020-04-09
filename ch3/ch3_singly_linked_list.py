@@ -80,13 +80,6 @@ class UnorderedSinglyLinkedList:
         if not found:
             print(f"{item} is not present in the list")
 
-
-
-
-
-
-
-
     def search(self, item):
         """ Check if item is present in the list"""
         current = self.head
@@ -133,7 +126,7 @@ class UnorderedSinglyLinkedList:
 
 
     def insert(self, pos, item):
-        if (pos < 0) or (pos > (a.length())):
+        if (pos < 0) or (pos > (self.length())):
             raise RuntimeError("Inproper pos value")
         self.list_size += 1
         if pos == 0:
@@ -151,7 +144,7 @@ class UnorderedSinglyLinkedList:
             previous.setNext(temp)
 
     def pop(self, pos = -1):
-        if (pos < -1) or (pos >= (a.length())):
+        if (pos < -1) or (pos >= (self.length())):
             raise RuntimeError("Inproper pos value")
 
         self.list_size -= 1
@@ -183,7 +176,7 @@ class UnorderedSinglyLinkedList:
 
     def slice(self, start, stop):
         if (start < 0) or (stop < 0) or \
-            (start >= a.length()) or (stop >= a.length()):
+            (start >= self.length()) or (stop >= self.length()):
             raise RuntimeError("Inproper start and/or stop value")
         if start >= stop:
             raise RuntimeError("start has to be less than stop")

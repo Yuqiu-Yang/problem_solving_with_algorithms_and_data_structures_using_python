@@ -1,17 +1,31 @@
-class DoublyLinkedNode:
+from ch3_singly_linked_list import *
+
+class DoublyLinkedNode(SinglyLinkedNode):
     def __init__(self, initData):
-        self.data = initData
-        self.next = None
+        super().__init__(initData)
         self.back = None
-    def getData(self):
-        return self.data
-    def getNext(self):
-        return self.next
     def getBack(self):
         return self.back
-    def setData(self, newData):
-        self.data = newData
-    def setNext(self, nextNode):
-        self.next = nextNode
     def setBack(self, backNode):
         self.back = backNode
+
+
+class UnorderedDoublyLinkedList:
+    def __init__(self):
+        self.head = None
+        self.list_size = 0
+    def __str__(self):
+        listString = "["
+        current = self.head
+        while current != None:
+            if current.getNext() != None:
+                listString += (str(current.getData()) + ", ")
+            else:
+                listString += str(current.getData())
+            current = current.getNext()
+
+        return listString + "]"
+    def isEmpty(self):
+        return self.head == None
+    def length(self):
+        return self.list_size
