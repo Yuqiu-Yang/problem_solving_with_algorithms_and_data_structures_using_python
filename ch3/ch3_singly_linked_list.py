@@ -54,6 +54,7 @@ class UnorderedSinglyLinkedList:
             current = current.getNext()
         if current == None:
             print(f"{item} is not present in the list")
+            self.list_size += 1
         else:
             if previous == None:
                 self.head = current.getNext()

@@ -96,3 +96,47 @@ class UnorderedDoublyLinkedList(UnorderedSinglyLinkedList):
             current.getBack().setNext(temp)
             if current.getNext() != None:
                 current.getNext().setBack(temp)
+    def remove(self, item):
+        current = self.head
+        count = 0
+        while (current != None) and (current.getData() != item):
+            current = current.getNext()
+            count += 1
+        if current == None:
+            print(f"{item} is not present in the list")
+        else:
+            if count == 0:
+                if self.head.getNext() != None:
+                    self.head.getNext().setBack(self.head.getBack())
+                self.head = current.getNext()
+                self.list_size -= 1
+            else:
+                current.getBack().setNext(current.getNext())
+                if current.getNext() != None:
+                    current.getNext().setBack(current.getBack())
+                self.list_size -= 1
+
+    def remove_all(self, item):
+        current = self.head
+        count = 0
+        found = False
+        while current != None:
+            if current.getData() == item:
+                found = True
+                self.list_size -= 1
+                if count  == 0:
+                    if self.head.getNext() != None:
+                        self.head.getNext().setBack(self.head.getBack())
+                    self.head = current.getNext()
+                    current = current.getNext()
+                else:
+                    current.getBack().setNext(current.getNext())
+                    if current.getNext() != None:
+                        current.getNext().setBack(current.getBack())
+                    current = current.getNext()
+            else:
+                current = current.getNext()
+                count += 1
+
+        if not found:
+            print(f"{item} is not present in the list")
