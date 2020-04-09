@@ -96,6 +96,7 @@ class UnorderedSinglyLinkedList:
         self.list_size += 1
         temp = SinglyLinkedNode(item)
         if self.list_size == 1:
+            self.list_size -= 1
             self.add(item)
         else:
             current = self.head
@@ -134,6 +135,7 @@ class UnorderedSinglyLinkedList:
             raise RuntimeError("Inproper pos value")
         self.list_size += 1
         if pos == 0:
+            self.list_size -= 1
             self.add(item)
         else:
             temp = SinglyLinkedNode(item)

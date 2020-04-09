@@ -46,3 +46,18 @@ class O1Queue(object):
         return self.queue_size == 0
     def size(self):
         return self.queue_size
+
+
+from ch3_doubly_linked_list import *
+
+class doublyLinkedListQueue:
+    def __init__(self):
+        self.item = UnorderedDoublyLinkedList()
+    def enqueue(self, item):
+        self.item.add(item)
+    def dequeue(self):
+        return self.item.pop()
+    def isEmpty(self):
+        return self.item.length() == 0
+    def size(self):
+        return self.item.length()
