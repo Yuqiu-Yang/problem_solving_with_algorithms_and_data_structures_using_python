@@ -61,7 +61,31 @@ class UnorderedSinglyLinkedList:
                 previous.setNext(current.getNext())
 
     def remove_all(self, item):
-        pass
+        current = self.head
+        previous = None
+        found = False
+        while (current != None):
+            if current.getData() == item:
+                found = True
+                self.list_size -= 1
+                if previous == None:
+                    self.head = current.getNext()
+                    current = self.head
+                else:
+                    previous.setNext(current.getNext())
+                    current = current.getNext()
+            else:
+                previous = current
+                current = current.getNext()
+        if not found:
+            print(f"{item} is not present in the list")
+
+
+
+
+
+
+
 
     def search(self, item):
         """ Check if item is present in the list"""
@@ -97,9 +121,20 @@ class UnorderedSinglyLinkedList:
         return ind
 
     def index_all(self, item):
-        pass
+        current = self.head
+        indList = []
+        count = 0
+        while current != None:
+            if current.getData() == item:
+                indList.append(count)
+            current = current.getNext()
+            count += 1
+        return indList
+
 
     def insert(self, pos, item):
+        if (pos < 0) or (pos > (a.length())):
+            raise RuntimeError("Inproper pos value")
         self.list_size += 1
         if pos == 0:
             self.add(item)
@@ -116,6 +151,9 @@ class UnorderedSinglyLinkedList:
             previous.setNext(temp)
 
     def pop(self, pos = -1):
+        if (pos < -1) or (pos >= (a.length())):
+            raise RuntimeError("Inproper pos value")
+
         self.list_size -= 1
         current = self.head
         previous = None
@@ -144,4 +182,19 @@ class UnorderedSinglyLinkedList:
                 return current.getData()
 
     def slice(self, start, stop):
-        pass
+        if (start < 0) or (stop < 0) or \
+            (start >= a.length()) or (stop >= a.length()):
+            raise RuntimeError("Inproper start and/or stop value")
+        if start >= stop:
+            raise RuntimeError("start has to be less than stop")
+        sList = []
+        current = self.head
+        count = 0
+        while count < start:
+            current = current.getNext()
+            count += 1
+        while count < stop:
+            sList.append(current.getData())
+            current = current.getNext()
+            count += 1
+        return sList
