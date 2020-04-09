@@ -95,10 +95,14 @@ class UnorderedSinglyLinkedList:
     def append(self, item):
         self.list_size += 1
         temp = SinglyLinkedNode(item)
-        current = self.head
-        while current.getNext() != None:
-            current = current.getNext()
-        current.setNext(temp)
+        if self.list_size == 1:
+            self.add(item)
+        else:
+            current = self.head
+            while current.getNext() != None:
+                current = current.getNext()
+            current.setNext(temp)
+
 
     def index(self, item):
         current = self.head
