@@ -46,7 +46,19 @@ class UnorderedSinglyLinkedList:
             current = current.getNext()
         return count
     def remove(self, item):
-        pass
+        self.list_size -= 1
+        current = self.head
+        previous = None
+        while (current != None) and (current.getData() != item):
+            previous = current
+            current = current.getNext()
+        if current == None:
+            print(f"{item} is not present in the list")
+        else:
+            if previous == None:
+                self.head = current.getNext()
+            else:
+                previous.setNext(current.getNext())
 
     def remove_all(self, item):
         pass
@@ -64,7 +76,13 @@ class UnorderedSinglyLinkedList:
         return found
 
     def append(self, item):
-        pass
+        self.list_size += 1
+        temp = SinglyLinkedNode(item)
+        current = self.head
+        while current.getNext() != None:
+            current = current.getNext()
+        current.setNext(temp)
+
     def index(self, item):
         current = self.head
         ind = None
@@ -82,10 +100,48 @@ class UnorderedSinglyLinkedList:
         pass
 
     def insert(self, pos, item):
-        pass
-    def pop(self, pos = -1):
-        pass
+        self.list_size += 1
+        if pos == 0:
+            self.add(item)
+        else:
+            temp = SinglyLinkedNode(item)
+            current = self.head
+            previous = None
+            count = 0
+            while count != pos:
+                previous = current
+                current = current.getNext()
+                count += 1
+            temp.setNext(current)
+            previous.setNext(temp)
 
+    def pop(self, pos = -1):
+        self.list_size -= 1
+        current = self.head
+        previous = None
+        if pos == -1:
+            while current.getNext() != None:
+                previous = current
+                current = current.getNext()
+            if previous == None:
+                temp = self.head.getData()
+                self.head = None
+                return temp
+            else:
+                previous.setNext(None)
+                return current.getData()
+        else:
+            count = 0
+            while count != pos:
+                previous = current
+                current = current.getNext()
+                count += 1
+            if previous == None:
+                self.head = current.getNext()
+                return current.getData()
+            else:
+                previous.setNext(current.getNext())
+                return current.getData()
 
     def slice(self, start, stop):
         pass
