@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 class HashTable:
     def __init__(self, tableSize, hashMethod = "None", rehashMethod = "Linear_1"):
         self.size = tableSize
@@ -5,8 +7,56 @@ class HashTable:
         self.data = [[] for x in range(self.size)]
         self.hashMethod = hashMethod
         self.rehashMethod = rehashMethod
+    def increaseSize(self):
+        self.size *= 2
+        temp_slots = deepcopy(self.slots)
+        temp_data = deepcopy(self.data)
+        self.slots = [[] for x in range(self.size)]
+        self.data = [[] for x in range(self.size)]
+        for i in range(len(temp_slots)):
+            for j in range(len(temp_slots[i])):
+                key = temp_slots[i][j]
+                data = temp_data[i][j]
+                hashValue = self.hashFunction(key)
+                if len(self.slots[hashValue]) == 0:
+                    # if it happens to be an empty slot,
+                    # we insert the key, data pair
+                    self.slots[hashValue].append(key)
+                    self.data[hashValue].append(data)
+                else:
+                    if key in self.slots[hashValue]:
+                        # if the key is present
+                        # we replace the data
+                        temp_ind = self.slots[hashValue].index(key)
+                        self.data[hashValue][temp_ind] = data
+                    else:
+                        # if a collision happens
+                        if self.rehashMethod == "Chaining":
+                            # if we are using Chaining as our
+                            # rehashing method, we simply
+                            # append the key and the data
+                            self.slots[hashValue].append(key)
+                            self.data[hashValue].append(data)
+                        else:
+                            # if we are using open addressing
+                            # we need to find the next empty slot
+                            rehashTime = 1
+                            nextSlot = self.rehash(hashValue, rehashTime)
+                            while (len(self.slots[nextSlot]) != 0) and \
+                                not (key in self.slots[nextSlot]):
+                                rehashTime += 1
+                                nextSlot = self.rehash(nextSlot, rehashTime)
+                            if len(self.slots[nextSlot]) == 0:
+                                self.slots[nextSlot].append(key)
+                                self.data[nextSlot].append(data)
+                            else:
+                                temp_ind = self.slots[nextSlot].index(key)
+                                self.data[nextSlot][temp_ind] = data
 
     def put(self, key, data):
+        lam = self.getLoadingFactor()
+        if lam > 0.95:
+            self.increaseSize()
         hashValue = self.hashFunction(key)
         if len(self.slots[hashValue]) == 0:
             # if it happens to be an empty slot,
@@ -113,6 +163,14 @@ class HashTable:
                 self.data[position].pop()
             else:
                 raise ValueError(f"{key} is not in the table")
+    def getLoadingFactor(self):
+        return (self.len())/(self.size)
+    def getSearchingSteps(self):
+        lam = self.getLoadingFactor()
+        if self.rehashMethod == "Chaining":
+            return (1 + lam / 2, lam)
+        else:
+            return (0.5 * (1 + 1/(1 - lam)), 0.5 * (1 + 1/((1 - lam)**2)))
     def hashFunction(self, key):
         if self.hashMethod == "Folding":
             # group of 2
