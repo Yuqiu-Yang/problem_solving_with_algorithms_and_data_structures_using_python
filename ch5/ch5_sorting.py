@@ -53,8 +53,27 @@ def insertionSort(aList):
         aList[position + 1] = currentValue
 
 
-def shellSort(aList):
-    pass
+def shellSort(aList, gap = "Half"):
+    if gap == "Half":
+        sublistCount = len(aList)//2
+        while sublistCount > 0:
+            for startposition in range(sublistCount):
+                gapInsertionSort(aList, startposition, sublistCount)
+            sublistCount //=2
+    else:
+        for i in range(gap):
+            gapInsertionSort(aList, i, gap)
+        insertionSort(aList)
+
+
+def gapInsertionSort(aList, start, gap):
+    for i in range(start + gap, len(aList), gap):
+        currentValue = aList[i]
+        position = i - gap
+        while (aList[position] > currentValue) and (position >= start):
+            aList[position + gap] = aList[position]
+            position -= gap
+        aList[position + gap] = currentValue
 
 
 def mergeSort(aList):
