@@ -17,6 +17,23 @@ def shortBubbleSort(aList):
                 aList[i], aList[i + 1] = aList[i + 1], aList[i]
         passnum -= 1
 
+def bidirectionalBubbleSort(aList):
+    exchange = True
+    endPt = len(aList) - 1
+    startPt = 0
+    while exchange and (endPt > startPt):
+        exchange = False
+        for i in range(startPt, endPt):
+            if aList[i] > aList[i + 1]:
+                aList[i], aList[i + 1] = aList[i + 1], aList[i]
+        endPt -= 1
+        for i in range(endPt, startPt, -1):
+            if aList[i] < aList[i - 1]:
+                exchange = True
+                aList[i], aList[i - 1] = aList[i - 1], aList[i]
+        startPt += 1
+
+
 
 def selectionSort(aList):
     for passnum in range(len(aList), 0, -1):
