@@ -52,6 +52,14 @@ def insertionSort(aList):
             position -= 1
         aList[position + 1] = currentValue
 
+def partialInsertionSort(aList, start, end):
+    for i in range(start + 1, end + 1):
+        currentValue = aList[i]
+        position = i - 1
+        while (aList[position] > currentValue) and (position >= start):
+            aList[position + 1] = aList[position]
+            position -= 1
+        aList[position + 1] = currentValue
 
 def shellSort(aList, gap = "Half"):
     if gap == "Half":
@@ -133,5 +141,114 @@ def mergeSortSlice(alist):
 
 
 
-def quickSort(aList):
-    pass
+def quickSort(aList, pivot_method = "median_3", partition_limit = 0):
+    quickSortHelper(aList,0, len(aList) - 1,  pivot_method, partition_limit)
+
+def quickSortHelper(aList, start, end, pivot_method, partition_limit):
+    if end > start + partition_limit:
+        splitPt = partition(aList, start, end, pivot_method)
+        quickSortHelper(aList, start, splitPt - 1, pivot_method, partition_limit)
+        quickSortHelper(aList, splitPt + 1, end, pivot_method, partition_limit)
+    else:
+        partialInsertionSort(aList, start, end)
+def partition(aList, start, end, pivot_method):
+    if pivot_method == "middle":
+        pivotInd = (start + end + 1)//2
+        pivotValue = aList[pivotInd]
+    elif pivot_method == "first":
+        pivotInd = start
+        pivotValue = aList[pivotInd]
+    else:
+        temp_list = [start, (start + end + 1)//2 ,end]
+        temp_value = [aList[x] for x in temp_list]
+        temp_ind = temp_value.index(max(temp_value))
+        temp_list.pop(temp_ind)
+        temp_value.pop(temp_ind)
+        pivotInd = temp_list[temp_value.index(max(temp_value))]
+        pivotValue = aList[pivotInd]
+    aList[start], aList[pivotInd] = pivotValue, aList[start]
+    pivotInd = start
+    leftMark = start + 1
+    rightMark = end
+    done = False
+
+    while not done:
+        while leftMark <= rightMark and \
+                aList[leftMark] <= pivotValue:
+            leftMark += 1
+        while leftMark <= rightMark and \
+                aList[rightMark] >= pivotValue:
+            rightMark -= 1
+        if leftMark > rightMark:
+            done = True
+        else:
+            aList[leftMark], aList[rightMark] = aList[rightMark], aList[leftMark]
+    aList[pivotInd], aList[rightMark] = aList[rightMark], pivotValue
+    return rightMark
+
+
+
+
+
+###################
+
+from time import time
+from random import sample
+from copy import deepcopy
+
+o = sample(range(5000), k = 5000)
+
+d = deepcopy(o)
+s_time = time()
+bubbleSort(d)
+e_time = time()
+print(f"Bubble sort requires {e_time - s_time} seconds ")
+
+d = deepcopy(o)
+s_time = time()
+shortBubbleSort(d)
+e_time = time()
+print(f"Short bubble sort requires {e_time - s_time} seconds ")
+
+d = deepcopy(o)
+s_time = time()
+bidirectionalBubbleSort(d)
+e_time = time()
+print(f"Bidirectional bubble sort requires {e_time - s_time} seconds ")
+
+
+d = deepcopy(o)
+s_time = time()
+selectionSort(d)
+e_time = time()
+print(f"Selection sort requires {e_time - s_time} seconds ")
+
+
+d = deepcopy(o)
+s_time = time()
+insertionSort(d)
+e_time = time()
+print(f"Insertion sort requires {e_time - s_time} seconds ")
+
+for i in [2,3,4,5,7,10,"Half"]:
+    d = deepcopy(o)
+    s_time = time()
+    shellSort(d, i)
+    e_time = time()
+    print(f"Shell sort with gap {i} requires {e_time - s_time} seconds ")
+
+d = deepcopy(o)
+s_time = time()
+mergeSort(d, 0, 5000-1)
+e_time = time()
+print(f"Merge sort requires {e_time - s_time} seconds ")
+
+
+
+for i in [0,1,2,3,4,5]:
+    for j in ["middle", "first", "median_3"]:
+        d = deepcopy(o)
+        s_time = time()
+        quickSort(d, pivot_method = j, partition_limit = i)
+        e_time = time()
+        print(f"Quick sort with partition_limit {i} and pivot method {j} requires {e_time - s_time} seconds ")
