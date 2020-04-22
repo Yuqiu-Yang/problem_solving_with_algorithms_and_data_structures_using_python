@@ -76,8 +76,62 @@ def gapInsertionSort(aList, start, gap):
         aList[position + gap] = currentValue
 
 
-def mergeSort(aList):
-    pass
+def mergeSort(aList, start, end):
+    if end > start:
+        midPt = (start + end + 1)//2
+        mergeSort(aList, start, midPt - 1)
+        mergeSort(aList, midPt, end)
+        i = 0
+        j = 0
+        l_count = 0
+        r_count = 0
+        while (l_count <= (midPt - 1 - start)) and (r_count <= (end - midPt)):
+            if aList[start + i] > aList[midPt + j]:
+                temp = aList[midPt + j]
+                for l in range(midPt + j - 1, start + i - 1, -1):
+                    aList[l + 1] = aList[l]
+                aList[start + i] = temp
+                r_count += 1
+                i += 1
+                j += 1
+            else:
+                l_count += 1
+                i += 1
+
+def mergeSortSlice(alist):
+    print("Splitting ",alist)
+    if len(alist)>1:
+        mid = len(alist)//2
+        lefthalf = alist[:mid]
+        righthalf = alist[mid:]
+
+        mergeSortSlice(lefthalf)
+        mergeSortSlice(righthalf)
+
+        i=0
+        j=0
+        k=0
+        while i < len(lefthalf) and j < len(righthalf):
+            if lefthalf[i] <= righthalf[j]:
+                alist[k]=lefthalf[i]
+                i=i+1
+            else:
+                alist[k]=righthalf[j]
+                j=j+1
+            k=k+1
+
+        while i < len(lefthalf):
+            alist[k]=lefthalf[i]
+            i=i+1
+            k=k+1
+
+        while j < len(righthalf):
+            alist[k]=righthalf[j]
+            j=j+1
+            k=k+1
+    print("Merging ",alist)
+
+
 
 def quickSort(aList):
     pass
