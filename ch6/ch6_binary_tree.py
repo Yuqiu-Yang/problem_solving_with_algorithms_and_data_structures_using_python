@@ -25,3 +25,14 @@ class BinaryTree:
         self.key = obj
     def getRootVal(self):
         return self.key
+    def traversal(self, method = "preorder"):
+        if method == "preorder":
+            print(self.key)
+        if self.leftChild != None:
+            self.leftChild.traversal(method)
+        if method == "inorder":
+            print(self.key)
+        if self.rightChild != None:
+            self.rightChild.traversal(method)
+        if method == "postorder":
+            print(self.key)
