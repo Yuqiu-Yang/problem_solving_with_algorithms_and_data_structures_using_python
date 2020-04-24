@@ -79,3 +79,35 @@ def evaluate(parseTree):
             return fn(evaluate(leftC), evaluate(rightC))
     else:
         return parseTree.getRootVal()
+
+
+def postorderEvaluate(parseTree):
+    opers = {"+": operator.add, "-": operator.sub,
+              "*": operator.mul, "/": operator.truediv,
+              "not": operator.not_, "and": operator.and_,
+              "or": operator.or_}
+    leftC = None
+    rightC = None
+
+    if parseTree:
+        leftC = postorderEvaluate(parseTree.getLeftChild())
+        rightC = postorderEvaluate(parseTree.getRightChild())
+        if leftC and rightC:
+            fn = opers[parseTree.getRootVal()]
+            if parseTree.getRootVal() == "not":
+                return fn(rightC)
+            else:
+                return fn(leftC, rightC)
+        else:
+            return parseTree.getRootVal()
+
+def printExp(parseTree):
+    sVal = ""
+    if parseTree:
+        if parseTree.getLeftChild() == None:
+            sVal += str(parseTree.getRootVal())
+        else:
+            sVal += '(' + printExp(parseTree.getLeftChild())
+            sVal += str(parseTree.getRootVal())
+            sVal += printExp(parseTree.getRightChild()) + ')'
+    return sVal
