@@ -31,7 +31,44 @@ class TreeNode:
             self.leftChild.parent = self
         if self.hasRightChild():
             self.rightChild.parent = self
-
+    def findMin(self):
+        if self.leftChild:
+            self.leftChild.findMin()
+        else:
+            return self
+    def findNextLargest(self):
+        if self.rightChild:
+            succ = self.rightChild.findMin()
+        else:
+            if self.parent:
+                if self.isLeftChild():
+                    succ = self.parent
+                else:
+                    self.parent.rightChild = None
+                    succ = self.parent.findNextLargest()
+                    self.parent.rightChild = self
+        return succ
+    def spliceOut(self):
+        if self.isLeaf():
+            if self.isLeftChild():
+                self.parent.leftChild = None
+            else:
+                self.parent.rightChild = None
+        else:
+            if self.hasLeftChild():
+                if self.isLeftChild():
+                    self.parent.leftChild = self.leftChild
+                else:
+                    self.parent.rightChild = self.leftChild
+                self.leftChild.parent = self.parent
+            else:
+                if self.isLeftChild():
+                    self.parent.leftChild = self.rightChild
+                else:
+                    self.parent.rightChild = self.rightChild
+                self.rightChild.parent = self.parent
+        def __iter__(self):
+            pass 
 class BinarySearchTree:
     def __inif__(self):
         self.root = None
@@ -66,7 +103,11 @@ class BinarySearchTree:
 
     def get(self, key):
         if self.root:
-            return self._get(key, self.root)
+            result = self._get(key, self.root)
+            if result:
+                return result.payload
+            else:
+                return None
         else:
             return None
     def _get(self, key, currentNode):
@@ -77,7 +118,66 @@ class BinarySearchTree:
         elif key > currentNode.key:
             return self._get(key, currentNode.rightChild)
         else:
-            return currentNode.payload
-    def __getitem__(key):
+            return currentNode
+    def __getitem__(self, key):
         return self.get(key)
-            
+    def __contains__(self, key):
+        if self.get(key):
+            return True
+        else:
+            return False
+    def delete(self, key):
+        if self.size == 0:
+            raise KeyError('Error, key not in tree')
+        elif self.size == 1 and self.root.key == key:
+            self.root = None
+            self.size -= 1
+        else:
+            nodeToRemove = self._get(key, self.root)
+            if nodeToRemove:
+                self.remove(nodeToRemove)
+                self.size -= 1
+            else:
+                raise KeyError('Error, key not in Tree')
+    def __delitem__(self, key):
+        self.delete(key)
+    def remove(self, node):
+        if node.isLeaf():
+            # Note in this case, we do not need to consider
+            # the situation where the node is the root
+            # since it's been handelled by the second if
+            # clause in the delete function
+            if node.isLeftChild():
+                node.parent.leftChild = None
+            else:
+                node.parent.rightChild = None
+        elif node.hasBothChildren():
+            succ = node.findSuccessor()
+        else:
+            # If the node only has one child
+            if node.hasLeftChild():
+                # if the the child is left child
+                if node.isLeftChild():
+                    node.parent.leftChild = node.leftChild
+                    node.leftChild.parent = node.parent
+                elif node.isRightChild():
+                    node.parent.rightChild = node.leftChild
+                    node.leftChild.parent = node.parent
+                else:
+                    node.replaceNodeData(node.leftChild.key,
+                                         node.leftChild.payload,
+                                         node.leftChild.leftChild,
+                                         node.leftChild.rightChild)
+            else:
+                # if the child is right child
+                if node.isLeftChild():
+                    node.parent.leftChild = node.rightChild
+                    node.rightChild.parent = node.parent
+                elif node.isRightChild():
+                    node.parent.rightChild = node.rightChild
+                    node.rightChild.parent = node.parent
+                else:
+                    node.replaceNodeData(node.rightChild.key,
+                                         node.rightChild.payload,
+                                         node.rightChild.leftChild,
+                                         node.rightChild.rightChild)
