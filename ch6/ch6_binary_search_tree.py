@@ -68,7 +68,14 @@ class TreeNode:
                     self.parent.rightChild = self.rightChild
                 self.rightChild.parent = self.parent
         def __iter__(self):
-            pass 
+            if self:
+                if self.hasLeftChild():
+                    for elem in self.leftChild:
+                        yield elem
+                yield self.key
+                if self.hasRightChild():
+                    for elem in self.rightChild:
+                        yield elem
 class BinarySearchTree:
     def __inif__(self):
         self.root = None
@@ -153,6 +160,9 @@ class BinarySearchTree:
                 node.parent.rightChild = None
         elif node.hasBothChildren():
             succ = node.findSuccessor()
+            succ.spliceOut()
+            node.key = succ.key
+            node.payload = succ.payload
         else:
             # If the node only has one child
             if node.hasLeftChild():
