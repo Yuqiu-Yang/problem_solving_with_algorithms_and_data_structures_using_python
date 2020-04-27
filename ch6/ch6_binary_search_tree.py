@@ -78,7 +78,7 @@ class TreeNode:
                     for elem in self.rightChild:
                         yield elem
 class BinarySearchTree:
-    def __inif__(self):
+    def __init__(self):
         self.root = None
         self.size = 0
     def length(self):

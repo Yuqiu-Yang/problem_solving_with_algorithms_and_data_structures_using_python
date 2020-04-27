@@ -45,7 +45,7 @@ class binaryHeap:
         return self.size
     def buildHeap(self, heap_list):
         self.size = len(heap_list)
-        self.heapList = [0] + heapList
+        self.heapList = [0] + heap_list
         i = self.size // 2
         while(i > 0):
             self.percolateDown(i)
