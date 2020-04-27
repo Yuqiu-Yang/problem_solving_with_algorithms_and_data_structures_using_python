@@ -33,10 +33,10 @@ class TreeNode:
         if self.hasRightChild():
             self.rightChild.parent = self
     def findMin(self):
-        if self.leftChild:
-            self.leftChild.findMin()
-        else:
-            return self
+        current = self
+        while current.hasLeftChild():
+            current = current.leftChild
+        return current
     def findNextLargest(self):
         if self.rightChild:
             succ = self.rightChild.findMin()
@@ -160,7 +160,7 @@ class BinarySearchTree:
             else:
                 node.parent.rightChild = None
         elif node.hasBothChildren():
-            succ = node.findSuccessor()
+            succ = node.findNextLargest()
             succ.spliceOut()
             node.key = succ.key
             node.payload = succ.payload
@@ -192,3 +192,34 @@ class BinarySearchTree:
                                          node.rightChild.payload,
                                          node.rightChild.leftChild,
                                          node.rightChild.rightChild)
+
+
+
+def BinarySearchTreeInorderTraversal(bTree):
+    root = bTree.root
+    minNode = root.findMin()
+    print(minNode.key)
+    succNode = minNode.findNextLargest()
+    if succNode:
+        print(succNode.key)
+    else:
+        while True:
+            succNode = succNode.findNextLargest()
+            if succNode:
+                print(succNode.key)
+            else:
+                break
+    print(root.key)
+    if root.hasRightChild():
+        minNode = root.rightChild.findMin()
+        print(minNode.key)
+        succNode = minNode.findNextLargest()
+        if succNode:
+            print(succNode.key)
+        else:
+            while True:
+                succNode = succNode.findNextLargest()
+                if succNode:
+                    print(succNode.key)
+                else:
+                    break
