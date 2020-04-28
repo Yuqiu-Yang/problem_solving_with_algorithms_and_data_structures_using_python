@@ -1,13 +1,17 @@
 import operator
 class binaryHeap:
-    def __init__(self, variation = "min"):
+    def __init__(self, variation = "min", limit_size = -1):
         self.heapList = [0]
         self.size = 0
         self.variation = variation
+        self.limitSize = limit_size
     def insert(self, k):
         self.heapList.append(k)
         self.size += 1
         self.percolateUp(self.size)
+        if self.limitSize >= 0:
+            while self.size > self.limitSize:
+                self.delExtreme()
     def percolateUp(self, i):
         oper = {"min": operator.lt,
                 "max": operator.gt}
@@ -41,7 +45,7 @@ class binaryHeap:
                 return 2 * i + 1
     def isEmpty(self):
         return self.size == 0
-    def size(self):
+    def length(self):
         return self.size
     def buildHeap(self, heap_list):
         self.size = len(heap_list)
@@ -50,3 +54,6 @@ class binaryHeap:
         while(i > 0):
             self.percolateDown(i)
             i -= 1
+        if self.limitSize >= 0:
+            while self.size > self.limitSize:
+                self.delExtreme()
