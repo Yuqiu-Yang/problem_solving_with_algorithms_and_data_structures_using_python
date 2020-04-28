@@ -23,11 +23,12 @@ class TreeNode:
         return self.leftChild or self.rightChild
     def hasBothChildren(self):
         return self.leftChild and self.rightChild
-    def replaceNodeData(self, key, value, lc, rc):
+    def replaceNodeData(self, key, value, lc, rc, bf=0):
         self.key = key
         self.payload = value
         self.leftChild = lc
         self.rightChild = rc
+        self.balanceFactor = bf
         if self.hasLeftChild():
             self.leftChild.parent = self
         if self.hasRightChild():
