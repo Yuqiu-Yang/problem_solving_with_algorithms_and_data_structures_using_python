@@ -120,43 +120,67 @@ def deriv(parseTree, val):
                 return f"({leftC.getRootVal()} * {deriv(rightC, val)})"
         elif parseTree.getRootVal() == "/":
             if (leftC.getRootVal() == val) and (not rightC.getRootVal() in (operslist + [val])):
-
+                # if x / 0
+                return f"(1/({rightC.getRootVal()}))"
             elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() == val):
-
+                # if 0 / x
+                return f"((-1*({leftC.getRootVal()}))/({val}**2))"
             elif (not leftC.getRootVal() in (operslist + [val])) and (not rightC.getRootVal() in (operslist + [val])):
-
+                # if 0 / 0
+                return f"(0)"
             elif (leftC.getRootVal() == val) and (rightC.getRootVal() == val):
-
+                # if x / x
+                return f"(0)"
             elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() in operslist):
-
+                # if fx / gx
+                return f"((({deriv(leftC, val)})*({printExp(rightC)}) - ({printExp(leftC)}))/(({printExp(rightC, val)})**2))"
             elif (leftC.getRootVal() == val) and (rightC.getRootVal() in operslist):
-
+                # if x / gx
+                return f"((({printExp(rightC)}) - ({printExp(leftC)}) ) / (({printExp(rightC, val)})**2))"
             elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() == val):
-
+                # if fx / x
+                return f"(({deriv(leftC, val)}) * {val} - ({printExp(leftC)}))"
             elif (leftC.getRootVal() in operslist) and (not rightC.getRootVal() in (operslist + [val])):
-
+                # if fx / 0
+                return f"(({deriv(leftC, val)})/ ({rightC.getRootVal}))"
             elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() in operslist):
+                # if 0 / fx
+                return f"((-1) * ({leftC.getRootVal()}) / (({printExp(rightC)})**2))"
 
         elif parseTree.getRootVal() == "**":
             if (leftC.getRootVal() == val) and (not rightC.getRootVal() in (operslist + [val])):
-
+                # if x ** 0
+                if rightC.getRootVal() == 0:
+                    return f"(0)"
+                else:
+                    return f"(({rightC.getRootVal()}) * (({val}) ** ({rightC.getRootVal()} - 1)))"
             elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() == val):
-
+                # if 0 ** x
+                return f"((({leftC.getRootVal()}) ** ({val})) * (ln({leftC.getRootVal()})))"
             elif (not leftC.getRootVal() in (operslist + [val])) and (not rightC.getRootVal() in (operslist + [val])):
-
+                # if 0 ** 0
+                return f"(0)"
             elif (leftC.getRootVal() == val) and (rightC.getRootVal() == val):
-
+                # if x ** x
+                return f"(({val}**{val}) * (ln({val}) + 1))"
             elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() in operslist):
-
+                # if fx ** gx
+                return f"( (({printExp(leftC)}) ** ({printExp(rightC)}))  *  ( (({printExp(rightC)} * ({deriv(leftC, val)}))/({printExp(leftC)})) +  (({deriv(rightC, val)}) * (ln({printExp(leftC)})))))"
             elif (leftC.getRootVal() == val) and (rightC.getRootVal() in operslist):
-
+                # if x ** gx
+                return f"( (({val}) ** ({printExp(rightC)})) * ((({deriv(rightC, val)}) * ln({val}))  + (({printExp(rightC)}) / x)) )"
             elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() == val):
-
+                # if fx ** x
+                return f"( (({printExp(leftC)}) ** ({val})) * ((ln({printExp(leftC)})) + ( (({val}) * ({deriv(leftC, val)}))/ ({printExp(leftC)}))))"
             elif (leftC.getRootVal() in operslist) and (not rightC.getRootVal() in (operslist + [val])):
-
+                # if fx ** 0
+                if rightC.getRootVal() == 0:
+                    return f"(0)"
+                else:
+                    return f"( (({printExp(leftC)})**({rightC.getRootVal()})) * (({rightC.getRootVal()}) * ({deriv(leftC, val)})/({printExp(leftC)})))"
             elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() in operslist):
-
-
+                # if 0 ** gx
+                return f"( (({leftC.getRootVal()}) ** ({printExp(rightC)})) * (ln({leftC.getRootVal()}) * ({deriv(rightC, val)}))  )"
 
 
 def evaluate(parseTree):
