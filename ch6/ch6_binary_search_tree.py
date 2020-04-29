@@ -39,6 +39,7 @@ class TreeNode:
             current = current.leftChild
         return current
     def findNextLargest(self):
+        succ = None
         if self.rightChild:
             succ = self.rightChild.findMin()
         else:
