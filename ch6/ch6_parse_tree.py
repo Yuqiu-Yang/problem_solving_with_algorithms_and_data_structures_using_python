@@ -2,37 +2,22 @@ from ch3_stack import *
 from ch6_binary_tree import *
 import operator
 import string
-
+import re
 def expProcessor(fpexp):
-    fplist = []
-    i = 0
-    figlist = [str(x) for x in range(10)]
-    while i < (len(fpexp)):
-        if fpexp[i] in ["(",")", "+","-","*","/"]:
-            fplist.append(fpexp[i])
-            i += 1
-        elif fpexp[i] == " ":
-            i += 1
-        elif fpexp[i] in figlist:
-            temp_str = fpexp[i]
-            while (i < (len(fpexp))) and (fpexp[i + 1] in figlist):
-                temp_str += fpexp[i + 1]
-                i += 1
-            fplist.append(temp_str)
-            i += 1
-        elif fpexp[i] in string.ascii_letters:
-            temp_str = fpexp[i]
-            while (i < (len(fpexp))) and (fpexp[i + 1] in string.ascii_letters):
-                temp_str += fpexp[i + 1]
-                i += 1
-            if temp_str in ["not", "and", "or", "True", "False"]:
-                fplist.append(temp_str)
-                i += 1
-            else:
-                raise ValueError("Unreconignizable character")
+    temp = re.findall('[0-9.a-zA-Z]+|[**]+|[//]+|[+\-*/()]?|[not]?|[and]?|[or]?|[True]?|[False]?|.',\
+    fpexp)
+    fplist = [i for i in temp if i not in ["", " "]]
+    i = 1
+    while True:
+        if (fplist[i] == "-") and (fplist[i-1] in ["(","+","-","*","/","**","//","not","and","or"]):
+            fplist[i+1] = "-"+fplist[i+1]
+            fplist.pop(i)
         else:
-            raise ValueError("Unreconignizable character")
+            i += 1
+            if i >= len(fplist)-1:
+                break
     return fplist
+
 
 
 
@@ -42,30 +27,142 @@ def buildParseTree(fplist):
     eTree = BinaryTree("")
     pStack.push(eTree)
     currentTree = eTree
-    for i in fplist:
-        if i == "(":
+    for i in range(len(fplist)):
+        if fplist[i] == "(":
             currentTree.insertLeft("")
             pStack.push(currentTree)
             currentTree = currentTree.getLeftChild()
-        elif i == ")":
+        elif fplist[i] == ")":
             currentTree = pStack.pop()
-        elif i in ["+","-", "*", "/", "not", "or", "and"]:
-            if i == "not":
+        elif fplist[i] in ["+","-", "*", "/","**","//", "not", "or", "and"]:
+            if fplist[i] == "not":
                 currentTree = pStack.pop()
-            currentTree.setRootVal(i)
+            currentTree.setRootVal(fplist[i])
             currentTree.insertRight("")
             pStack.push(currentTree)
             currentTree = currentTree.getRightChild()
         else:
-            currentTree.setRootVal(eval(i))
+            if fplist[i] in string.ascii_letters:
+                currentTree.setRootVal(fplist[i])
+            else:
+                currentTree.setRootVal(eval(fplist[i]))
             currentTree = pStack.pop()
 
     return eTree
+
+def deriv(parseTree, val):
+    operslist = ["+", "-", "*", "/", "**"]
+    # we only deal with +, -, *, /, **
+    leftC = parseTree.getLeftChild()
+    rightC = parseTree.getRightChild()
+    if leftC and rightC:
+        if parseTree.getRootVal() in ["+", "-"]:
+            if (leftC.getRootVal() == val) and (not rightC.getRootVal() in (operslist + [val])):
+                # if x +- 0
+                return f"(1)"
+            elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() == val):
+                # if 0 +- x
+                if parseTree.getRootVal() == "+":
+                    return f"(1)"
+                else:
+                    return f"(-1)"
+            elif (not leftC.getRootVal() in (operslist + [val])) and (not rightC.getRootVal() in (operslist + [val])):
+                # if 0 +- 0
+                return f"(0)"
+            elif (leftC.getRootVal() == val) and (rightC.getRootVal() == val):
+                # if x +- x
+                if parseTree.getRootVal() == "+":
+                    return f"(2)"
+                else:
+                    return f"(0)"
+            elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() in operslist):
+                # if fx +- gx
+                return f"({deriv(leftC,val)} {parseTree.getRootVal()} {deriv(rightC, val)})"
+            elif (leftC.getRootVal() == val) and (rightC.getRootVal() in operslist):
+                # if x +- gx
+                return f"(1 {parseTree.getRootVal()} {deriv(rightC, val)})"
+            elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() == val):
+                # if fx +- x
+                return f"({deriv(leftC, val)} {parseTree.getRootVal()} 1)"
+            elif (leftC.getRootVal() in operslist) and (not rightC.getRootVal() in (operslist + [val])):
+                # if fx +- 0
+                return f"({deriv(leftC, val)})"
+            elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() in operslist):
+                # if 0 +- gx
+                return f"({parseTree.getRootVal()}{deriv(rightC, val)})"
+        elif parseTree.getRootVal() == "*":
+            if (leftC.getRootVal() == val) and (not rightC.getRootVal() in (operslist + [val])):
+                # if x * 0
+                return f"({rightC.getRootVal()})"
+            elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() == val):
+                # if 0 * x
+                return f"({leftC.getRootVal()})"
+            elif (not leftC.getRootVal() in (operslist + [val])) and (not rightC.getRootVal() in (operslist + [val])):
+                # if 0 * 0
+                return f"(0)"
+            elif (leftC.getRootVal() == val) and (rightC.getRootVal() == val):
+                # if x * x
+                return f"(2 * x)"
+            elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() in operslist):
+                # if fx * gx
+                return f"({printExp(leftC)}*{deriv(rightC, val)} + {deriv(leftC, val)}*{printExp(rightC)})"
+            elif (leftC.getRootVal() == val) and (rightC.getRootVal() in operslist):
+                # if x * gx
+                return f"({val}*{deriv(rightC, val)} + {printExp(rightC)})"
+            elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() == val):
+                # if fx * x
+                return f"({printExp(leftC)} + {deriv(leftC, val)}*{val})"
+            elif (leftC.getRootVal() in operslist) and (not rightC.getRootVal() in (operslist + [val])):
+                # if fx * 0
+                return f"({rightC.getRootVal()} * {deriv(leftC, val)})"
+            elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() in operslist):
+                # if 0 * gx
+                return f"({leftC.getRootVal()} * {deriv(rightC, val)})"
+        elif parseTree.getRootVal() == "/":
+            if (leftC.getRootVal() == val) and (not rightC.getRootVal() in (operslist + [val])):
+
+            elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() == val):
+
+            elif (not leftC.getRootVal() in (operslist + [val])) and (not rightC.getRootVal() in (operslist + [val])):
+
+            elif (leftC.getRootVal() == val) and (rightC.getRootVal() == val):
+
+            elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() in operslist):
+
+            elif (leftC.getRootVal() == val) and (rightC.getRootVal() in operslist):
+
+            elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() == val):
+
+            elif (leftC.getRootVal() in operslist) and (not rightC.getRootVal() in (operslist + [val])):
+
+            elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() in operslist):
+
+        elif parseTree.getRootVal() == "**":
+            if (leftC.getRootVal() == val) and (not rightC.getRootVal() in (operslist + [val])):
+
+            elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() == val):
+
+            elif (not leftC.getRootVal() in (operslist + [val])) and (not rightC.getRootVal() in (operslist + [val])):
+
+            elif (leftC.getRootVal() == val) and (rightC.getRootVal() == val):
+
+            elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() in operslist):
+
+            elif (leftC.getRootVal() == val) and (rightC.getRootVal() in operslist):
+
+            elif (leftC.getRootVal() in operslist) and (rightC.getRootVal() == val):
+
+            elif (leftC.getRootVal() in operslist) and (not rightC.getRootVal() in (operslist + [val])):
+
+            elif (not leftC.getRootVal() in (operslist + [val])) and (rightC.getRootVal() in operslist):
+
+
 
 
 def evaluate(parseTree):
     opers = {"+": operator.add, "-": operator.sub,
               "*": operator.mul, "/": operator.truediv,
+              "**": operator.pow, "//": operator.floordiv,
               "not": operator.not_, "and": operator.and_,
               "or": operator.or_}
     leftC = parseTree.getLeftChild()
@@ -84,6 +181,7 @@ def evaluate(parseTree):
 def postorderEvaluate(parseTree):
     opers = {"+": operator.add, "-": operator.sub,
               "*": operator.mul, "/": operator.truediv,
+              "**": operator.pow, "//": operator.floordiv,
               "not": operator.not_, "and": operator.and_,
               "or": operator.or_}
     leftC = None
