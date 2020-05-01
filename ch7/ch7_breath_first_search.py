@@ -10,7 +10,7 @@ def bfs(g, start):
         currentVert = vertQueue.dequeue()
         for nbr in currentVert.getConnections():
             if nbr.getColor() == "white":
-                nbr.setColor("grey")
+                nbr.setColor("gray")
                 nbr.setDistance(currentVert.getDistance() + 1)
                 nbr.setPredecessor(currentVert)
                 vertQueue.enqueue(nbr)
@@ -22,4 +22,3 @@ def traverse(y):
         print(x.getId())
         x = x.getPredecessor()
     print(x.getId())
-    

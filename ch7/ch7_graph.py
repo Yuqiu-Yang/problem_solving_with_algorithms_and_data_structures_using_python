@@ -5,6 +5,16 @@ class Vertex:
         self.color = "white"
         self.distance = 0
         self.predecessor = None
+        self.discovery = None
+        self.finish = None
+    def getDiscovery(self):
+        return self.discovery
+    def getFinish(self):
+        return self.finish
+    def setDiscovery(self, t):
+        self.discovery = t
+    def setFinish(self, t):
+        self.finish = t
     def getColor(self):
         return self.color
     def getDistance(self):
@@ -16,7 +26,7 @@ class Vertex:
     def setDistance(self, d):
         self.distance = d
     def setPredecessor(self, pred):
-        self.predecessor = pred 
+        self.predecessor = pred
     def addNeighbor(self, nbr, weight = 0):
         self.connectedTo[nbr] = weight
     def __str__(self):
