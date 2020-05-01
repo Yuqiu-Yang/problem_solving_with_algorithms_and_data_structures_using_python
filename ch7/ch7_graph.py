@@ -1,9 +1,10 @@
+import sys
 class Vertex:
     def __init__(self, key):
         self.id = key
         self.connectedTo = {}
         self.color = "white"
-        self.distance = 0
+        self.distance = sys.maxsize
         self.predecessor = None
         self.discovery = None
         self.finish = None
@@ -63,5 +64,15 @@ class Graph:
         self.vertList[f].addNeighbor(self.vertList[t], cost)
     def getVertices(self):
         return self.vertList.keys()
+    def transpose(self, g = None):
+        if g == None:
+            g = self
+        pred = {}
+        for v in g:
+            pred[v.getId()] = v.connectedTo
+            v.connectedTo = {}
+        for v in g:
+            for w in pred[v.getId()].keys():
+                w.addNeighbor(v, pred[v.getId()][w])
     def __iter__(self):
         return iter(self.vertList.values())

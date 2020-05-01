@@ -1,0 +1,44 @@
+Metadata-Version: 1.1
+Name: pythonds
+Version: 1.2.1
+Summary: Data structures package for Problem Solving with Algorithms and Data Structures using Python
+Home-page: https://github.com/bnmnetp/pythonds
+Author: Brad Miller
+Author-email: bonelake@mac.com
+License: GPL
+Description: Problem Solving with Algorithms and Data Structures using Python
+        ================================================================
+        
+        This book, available from Franklin Beedle, and online at
+        http://interactivepython.org defines and then uses several 
+        common data structures.
+        
+        This python package contains all of the common data structures and implementations of some algorithms as presented in the book.  These include
+        
+        * Stack
+        * Queue
+        * Dequeue
+        * List
+        * Priority Queue
+        * Tree
+          * binary tree
+          * binary heap
+          * balanced binary tree
+          * binary search tree
+        * Graphs
+          * adjacency list representation
+        
+        
+        
+Keywords: Education,Data Structures,Stack,Queue,Tree,Graph
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Education
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Unix
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Topic :: Education
