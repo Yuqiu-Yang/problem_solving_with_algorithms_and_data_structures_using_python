@@ -49,6 +49,13 @@ class Graph:
     def __init__(self):
         self.vertList = {}
         self.numVertices = 0
+    def resetGraph(self):
+        for v in self:
+            v.setColor("white")
+            v.setPredecessor(None)
+            v.setDistance(sys.maxsize)
+            v.setFinish(None)
+            v.setDiscovery(None)
     def addVertex(self, key):
         self.numVertices += 1
         newVertex = Vertex(key)
