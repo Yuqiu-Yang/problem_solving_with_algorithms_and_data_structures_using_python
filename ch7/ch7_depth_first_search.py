@@ -23,6 +23,10 @@ class DFSGraph(Graph):
         self.time += 1
         startVertex.setFinish(self.time)
     def topologicalSort(self):
-        pass
+        self.dfs()
+        temp = list(self.vertList.values())
+        temp.sort(key = lambda x: x.getFinish(), reverse = True)
+        topologicalList = [x.getId() for x in temp]
+        return topologicalList
     def SCC(self):
-        pass 
+        pass
