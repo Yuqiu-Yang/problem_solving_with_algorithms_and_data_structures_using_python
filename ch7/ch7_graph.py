@@ -28,6 +28,11 @@ class Vertex:
         self.distance = d
     def setPredecessor(self, pred):
         self.predecessor = pred
+    def getSuccessor(self):
+        for aVertex in self.getConnections():
+            if aVertex.getPredecessor() == self:
+                return aVertex
+        return None
     def addNeighbor(self, nbr, weight = 0):
         self.connectedTo[nbr] = weight
     def __str__(self):
