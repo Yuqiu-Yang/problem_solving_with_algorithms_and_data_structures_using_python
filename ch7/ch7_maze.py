@@ -1,5 +1,6 @@
 from ch4_maze import Maze
 from ch7_breadth_first_search import *
+import turtle
 PART_OF_PATH = 'O'
 TRIED = '.'
 OBSTACLE = '+'
@@ -46,3 +47,4 @@ def bfsMaze(mazeFile = 'ch4_maze2.txt'):
             myMaze.updatePosition(int(pos[0]),int(pos[1]) , PART_OF_PATH)
 
 bfsMaze()
+turtle.exitonclick()
