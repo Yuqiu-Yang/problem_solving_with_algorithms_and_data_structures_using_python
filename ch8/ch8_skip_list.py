@@ -1,4 +1,8 @@
 from random import randrange
+from ch3_stack import *
+def flip():
+    return randrange(2)
+
 
 class HeaderNode:
     def __init__(self):
@@ -62,3 +66,74 @@ class SkipList:
             return current.getNext().getData()
         else:
             return None
+    def insert(self, key, data):
+        if self.head = None:
+            self.head = HeaderNode()
+            temp = DataNode(key, data)
+            self.head.setNext(temp)
+            top = temp
+            while flip() == 1:
+                newhead = HeaderNode()
+                temp = DataNode(key, data)
+                temp.setDown(top)
+                newhead.setNext(temp)
+                newhead.setDown(self.head)
+                self.head = newhead
+                top = temp
+        else:
+            towerStack = Stack()
+            current = self.head
+            stop = False
+            while not stop:
+                if current == None:
+                    stop = True
+                else:
+                    if current.getNext() == None:
+                        towerStack.push(current)
+                        current = current.getDown()
+                    else:
+                        if current.getNext().getKey() > key:
+                            towerStack.push(current)
+                            current = current.getDown()
+                        else:
+                            current = current.getNext()
+            lowestLevel = towerStack.pop()
+            temp = DataNode(key, data)
+            temp.setNext(lowestLevel.getNext())
+            lowestLevel.setNext(temp)
+            top = temp
+            while flip() == 1:
+                if towerStack.isEmpty():
+                    newhead = HeaderNode()
+                    temp = DataNode(key, data)
+                    temp.setDown(top)
+                    newhead.setDown(self.head)
+                    newhead.setNext(temp)
+                    self.head = newhead
+                    top = temp
+                else:
+                    nextLevel = towerStack.pop()
+                    temp = DataNode(key, data)
+                    temp.setDown(top)
+                    temp.setNext(nextLevel.getNext())
+                    nextLevel.setNext(temp)
+                    top = temp 
+
+
+    def __getitem__(self, key):
+        return self.search(key)
+    def __setitem__(self, key, data):
+        self.insert(key, data)
+    def __contains__(self, key):
+        if self.search(key):
+            return True
+        else:
+            return False
+
+class Map:
+    def __init__(self):
+        self.collection = SkipList()
+    def put(self, key, data):
+        self.collection.insert(key, data)
+    def get(self, key):
+        self.collection.search(key)
