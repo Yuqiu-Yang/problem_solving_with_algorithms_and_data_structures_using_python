@@ -1,7 +1,6 @@
 import sys
 import os
 from PIL import Image
-from pythonds.graphs import PriorityQueue
 def simpleQuant(imageFile, rq = 36, gq = 42, bq = 42):
     im = Image.open(imageFile)
     w, h = im.size
