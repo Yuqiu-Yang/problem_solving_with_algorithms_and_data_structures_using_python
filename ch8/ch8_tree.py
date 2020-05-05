@@ -40,7 +40,7 @@ class OctTree:
         self.numLeaves = 0
         self.leafList = []
     def insert(self, r, g, b):
-        if not self.head:
+        if not self.root:
             self.root = self.otNode(outer = self)
         self.root.insert(r, g, b, 0, self)
     def find(self, r, g, b):
@@ -73,7 +73,7 @@ class OctTree:
             self.oTree = outer
             self.children = [None]*8
         def insert(self, r, g, b, level, outer):
-            if level < self.outer.maxLevel:
+            if level < self.oTree.maxLevel:
                 idx = self.computeIndex(r, g, b, level)
                 if self.children[idx] == None:
                     self.children[idx] = outer.otNode(parent = self, \
@@ -89,8 +89,8 @@ class OctTree:
                 self.blue += b
                 self.count += 1
 
-        def find(self, r, g, ,b, level):
-            if level < self.outer.maxLevel:
+        def find(self, r, g, b, level):
+            if level < self.oTree.maxLevel:
                 idx = self.computeIndex(r, g, b, level)
                 if self.children[idx]:
                     return self.children[idx].find(r, g, b, level + 1)
