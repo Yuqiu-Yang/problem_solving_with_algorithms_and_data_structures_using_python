@@ -1,6 +1,7 @@
 import sys
 import os
 from PIL import Image
+from pythonds.graphs import PriorityQueue
 def simpleQuant(imageFile, rq = 36, gq = 42, bq = 42):
     im = Image.open(imageFile)
     w, h = im.size
@@ -38,6 +39,7 @@ class OctTree:
         self.maxLevel = 5
         self.numLeaves = 0
         self.leafList = []
+        self.leafQueue = PriorityQueue()
     def insert(self, r, g, b):
         if not self.root:
             self.root = self.otNode(outer = self)
@@ -50,17 +52,26 @@ class OctTree:
             smallest = self.findMinCube()
             smallest.parent.merge()
             self.leafList.append(smallest.parent)
+            self.leafQueue.add((smallest.parent.count, smallest.parent))
             self.numLeaves += 1
     def findMinCube(self):
         minCount = sys.maxsize
         maxLev = 0
         minCube = None
-        for i in self.leafList:
-            if i.count <= minCount and i.level >= maxLev:
-                minCube = i
-                minCount = i.count
-                maxLev = i.level
+        i = self.leafQueue.delMin()
+        minCube = i
+        minCount = i.count
+        maxLev = i.level
+        self.leafQueue.add((i.count, i))
+        #for i in self.leafList:
+        #    if i.count <= minCount and i.level >= maxLev:
+        #        minCube = i
+        #        minCount = i.count
+        #        maxLev = i.level
         return minCube
+    ####
+    # Inner class otNode
+    ####
     class otNode:
         def __init__(self, parent = None, level = 0, outer = None):
             self.red = 0
@@ -83,10 +94,12 @@ class OctTree:
                 if self.count == 0:
                     self.oTree.numLeaves += 1
                     self.oTree.leafList.append(self)
+                    self.oTree.leafQueue.add((self.count, self))
                 self.red += r
                 self.green += g
                 self.blue += b
                 self.count += 1
+                self.oTree.leafQueue.decreaseKey(self, self.count)
 
         def find(self, r, g, b, level):
             if level < self.oTree.maxLevel:
@@ -105,6 +118,8 @@ class OctTree:
                 if i:
                     if i.count > 0:
                         self.oTree.leafList.remove(i)
+                        self.oTree.leafQueue.decreaseKey(i, -1 * (sys.maxsize))
+                        self.oTree.leafQueue.delMin()
                         self.oTree.numLeaves -= 1
                     else:
                         print("Recursively Merging non-leaf...")
